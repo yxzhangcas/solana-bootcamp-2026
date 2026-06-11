@@ -1,0 +1,4 @@
+yxzhang@SolanaLearn:06-stablecoin$ anchor keys sync
+yxzhang@SolanaLearn:06-stablecoin$ anchor build
+yxzhang@SolanaLearn:06-stablecoin$ cp target/idl/stablecoin.json idls/
+yxzhang@SolanaLearn:06-stablecoin$ anchor test

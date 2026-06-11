@@ -6,10 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-stablecoin = "rYXfi25x9JMgau82aGMJMVUokq7JzueqehiJUmwR97Q"
-
-[registry]
-url = "https://api.apr.dev"
+stablecoin = "GgvDxkMn9WbZJ5sJEemUdcRrrw1y6LdNTaR7QEacvV9R"
 
 [provider]
 cluster = "localnet"

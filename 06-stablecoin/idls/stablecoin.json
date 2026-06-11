@@ -1,5 +1,5 @@
 {
-  "address": "rYXfi25x9JMgau82aGMJMVUokq7JzueqehiJUmwR97Q",
+  "address": "GgvDxkMn9WbZJ5sJEemUdcRrrw1y6LdNTaR7QEacvV9R",
   "metadata": {
     "name": "stablecoin",
     "version": "0.1.0",
@@ -56,7 +56,7 @@
         {
           "name": "mint",
           "docs": [
-            "The stablecoin mint"
+            "The Token-2022 stablecoin mint"
           ],
           "writable": true,
           "pda": {
@@ -76,7 +76,7 @@
         {
           "name": "token_account",
           "docs": [
-            "The token account to burn from"
+            "The Token-2022 token account to burn from"
           ],
           "writable": true,
           "pda": {
@@ -86,41 +86,8 @@
                 "path": "owner"
               },
               {
-                "kind": "const",
-                "value": [
-                  6,
-                  221,
-                  246,
-                  225,
-                  215,
-                  101,
-                  161,
-                  147,
-                  217,
-                  203,
-                  225,
-                  70,
-                  206,
-                  235,
-                  121,
-                  172,
-                  28,
-                  180,
-                  133,
-                  237,
-                  95,
-                  91,
-                  55,
-                  145,
-                  58,
-                  140,
-                  245,
-                  133,
-                  126,
-                  255,
-                  0,
-                  169
-                ]
+                "kind": "account",
+                "path": "token_program"
               },
               {
                 "kind": "account",
@@ -168,7 +135,7 @@
         },
         {
           "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
         }
       ],
       "args": [
@@ -270,7 +237,7 @@
       "name": "initialize",
       "docs": [
         "Initialize the stablecoin mint and config",
-        "This creates a new token mint with the program PDA as the mint authority"
+        "This creates a new Token-2022 mint with the program PDA as the mint authority"
       ],
       "discriminator": [
         175,
@@ -313,7 +280,7 @@
         {
           "name": "mint",
           "docs": [
-            "The stablecoin mint",
+            "The Token-2022 stablecoin mint",
             "The config PDA is set as both mint authority and freeze authority"
           ],
           "writable": true,
@@ -333,7 +300,7 @@
         },
         {
           "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
         },
         {
           "name": "system_program",
@@ -418,7 +385,7 @@
         {
           "name": "mint",
           "docs": [
-            "The stablecoin mint"
+            "The Token-2022 stablecoin mint"
           ],
           "writable": true,
           "pda": {
@@ -438,7 +405,7 @@
         {
           "name": "destination",
           "docs": [
-            "The destination token account to mint to"
+            "The destination Token-2022 token account (ATA) to mint to"
           ],
           "writable": true,
           "pda": {
@@ -448,41 +415,8 @@
                 "path": "destination_owner"
               },
               {
-                "kind": "const",
-                "value": [
-                  6,
-                  221,
-                  246,
-                  225,
-                  215,
-                  101,
-                  161,
-                  147,
-                  217,
-                  203,
-                  225,
-                  70,
-                  206,
-                  235,
-                  121,
-                  172,
-                  28,
-                  180,
-                  133,
-                  237,
-                  95,
-                  91,
-                  55,
-                  145,
-                  58,
-                  140,
-                  245,
-                  133,
-                  126,
-                  255,
-                  0,
-                  169
-                ]
+                "kind": "account",
+                "path": "token_program"
               },
               {
                 "kind": "account",
@@ -533,7 +467,7 @@
         },
         {
           "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
         },
         {
           "name": "associated_token_program",
@@ -790,7 +724,7 @@
           {
             "name": "admin",
             "docs": [
-              "The admin who can configure minters and blacklist accounts"
+              "The admin who can configure minters"
             ],
             "type": "pubkey"
           },

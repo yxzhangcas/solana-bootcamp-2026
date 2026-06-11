@@ -5,7 +5,7 @@ use anchor_spl::{
     token_interface::{Mint, TokenAccount},
 };
 
-declare_id!("rYXfi25x9JMgau82aGMJMVUokq7JzueqehiJUmwR97Q");
+declare_id!("GgvDxkMn9WbZJ5sJEemUdcRrrw1y6LdNTaR7QEacvV9R");
 
 #[program]
 pub mod stablecoin {

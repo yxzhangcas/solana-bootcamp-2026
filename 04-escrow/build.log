@@ -1,0 +1,17 @@
+yxzhang@SolanaLearn:04-escrow$ anchor keys sync
+yxzhang@SolanaLearn:04-escrow$ anchor build
+# 直接构建报错，鉴定是依赖问题，尝试排查失败，直接将Anchor版本改成1.0.2（所有位置都修改），并重新加载相关依赖
+yxzhang@SolanaLearn:anchor_escrow$ avm use 1.0.2
+# 删除两个Cargo.toml文件中的依赖
+yxzhang@SolanaLearn:04-escrow$ cargo add --dev litesvm litesvm-token anchor-litesvm litesvm-utils solana-sdk spl-associated-token-account spl-token
+yxzhang@SolanaLearn:04-escrow$ cd programs/anchor_escrow/
+yxzhang@SolanaLearn:anchor_escrow$ cargo add --dev litesvm litesvm-token solana-sdk spl-associated-token-account borsh sha2 solana-program-pack
+yxzhang@SolanaLearn:anchor_escrow$ cd -
+yxzhang@SolanaLearn:04-escrow$ rm Cargo.lock # 这一步很重要，依赖出现问题是都可以尝试一下清理lock文件，自动生成新的
+yxzhang@SolanaLearn:04-escrow$ anchor build
+yxzhang@SolanaLearn:04-escrow$ cp target/idl/anchor_escrow.json idls/
+# 修改 Anchor.toml 中的test设置：test = "cargo test --test anchor-litesvm-tests"
+yxzhang@SolanaLearn:04-escrow$ anchor test
+# 报错，在测试文件头部加上：use anchor_lang::prelude::*;
+yxzhang@SolanaLearn:04-escrow$ anchor test # 测试通过
+# 修改 .gitignore，确保idl文件和lock文件可以上传

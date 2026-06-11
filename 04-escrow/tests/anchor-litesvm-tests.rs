@@ -1,5 +1,6 @@
 #![allow(unexpected_cfgs)]
 
+use anchor_lang::prelude::*;
 use anchor_litesvm::{AnchorLiteSVM, Signer};
 use litesvm_utils::{AssertionHelpers, TestHelpers};
 use anchor_lang::system_program;

@@ -6,7 +6,7 @@ pub mod instructions;
 pub use instructions::*;
 pub mod state;
 
-declare_id!("8F3byNyXVHzfmjKK9J2cxvVbKzRiVYh8icoprMUqSFmb");
+declare_id!("7SwmEztx634fXki884aMpgpmvGSYcLiHgJFGki2TXrBr");
 
 #[program]
 pub mod anchor_escrow {

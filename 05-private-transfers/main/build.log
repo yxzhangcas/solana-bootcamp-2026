@@ -1,0 +1,43 @@
+# 验证器合约
+yxzhang@SolanaLearn:main$ cd circuits/withdrawal/
+yxzhang@SolanaLearn:withdrawal$ nargo test
+yxzhang@SolanaLearn:withdrawal$ nargo compile
+yxzhang@SolanaLearn:withdrawal$ sunspot compile target/withdrawal.json 
+yxzhang@SolanaLearn:withdrawal$ sunspot setup target/withdrawal.ccs 
+yxzhang@SolanaLearn:withdrawal$ echo $GNARK_VERIFIER_BIN
+/home/yxzhang/.sunspot/gnark-solana/crates/verifier-bin
+yxzhang@SolanaLearn:withdrawal$ sunspot deploy target/withdrawal.vk 
+yxzhang@SolanaLearn:withdrawal$ solana program deploy --program-id target/withdrawal-keypair.json target/withdrawal.so 
+Program Id: BmMcAh1bzTR4XFEwgX6vrpSpdRcu9fRcSP7rtbA3eZpy ### 验证器合约地址 ###
+yxzhang@SolanaLearn:withdrawal$ cd -
+# 主合约
+yxzhang@SolanaLearn:main$ cd anchor/
+# 修改sunspot verifier地址，都改成自己部署的验证器合约地址（Acnhor.toml, lib.rs, e2e.ts, frontend/src/constants.ts
+yxzhang@SolanaLearn:anchor$ anchor keys sync
+Updated to A6wocRpUfFJgXj1tQw6UG74E2HTqax4DzD9cN3YvDbN1
+yxzhang@SolanaLearn:anchor$ anchor build
+yxzhang@SolanaLearn:anchor$ solana program deploy --program-id target/deploy/private_transfers-keypair.json target/deploy/private_transfers.so 
+Program Id: A6wocRpUfFJgXj1tQw6UG74E2HTqax4DzD9cN3YvDbN1 ### 主合约地址 ###
+yxzhang@SolanaLearn:anchor$ cp target/idl/private_transfers.json idls/
+yxzhang@SolanaLearn:anchor$ cp target/idl/private_transfers.json ../frontend/src/idl/
+yxzhang@SolanaLearn:anchor$ bun i
+yxzhang@SolanaLearn:anchor$ npm run init-pool  # package.json 脚本中的rpc改成自己的，用完再改回来
+Program ID: A6wocRpUfFJgXj1tQw6UG74E2HTqax4DzD9cN3YvDbN1
+Wallet: GNiXA2YysPgfWphbVWxLWZs8PT5aPzhHERE8irz4Yemz
+Pool: BNA9DE4jQbBuAcAVirwUdUQsFBQv4dVhsyuJ8Qa3VY67
+Vault: GXuSht4BDYKMrsuUWVPm9JjXfjh6EBNg2psg7yUqm8zE
+Nullifier Set: 8VL5K7jtRyjByvzV3x9haU7EdkJrjmhPtwzgtxra2a6B
+yxzhang@SolanaLearn:anchor$ cd -
+# 后端
+yxzhang@SolanaLearn:main$ cd backend/
+# 修改src/server.ts中的Program_id，改成自己的合约地址
+yxzhang@SolanaLearn:backend$ bun i
+# 前端
+yxzhang@SolanaLearn:main$ cd frontend/
+# 修改src
+yxzhang@SolanaLearn:frontend$ bun run scripts/generate-client.ts # 依赖后端server.ts中的program_id，需要先改后端
+yxzhang@SolanaLearn:frontend$ bun i
+# 同时启动前后端（需修改backend/server.ts和frontend/constants.ts中的rpc）
+yxzhang@SolanaLearn:backend$ bun run dev
+yxzhang@SolanaLearn:frontend$ bun run dev
+# http://localhost:3000/ 实操OK

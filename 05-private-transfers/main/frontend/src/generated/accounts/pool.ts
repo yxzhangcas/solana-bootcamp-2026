@@ -49,28 +49,18 @@ export function getPoolDiscriminatorBytes() {
 
 export type Pool = {
   discriminator: ReadonlyUint8Array;
-  /** Authority that initialized the pool */
   authority: Address;
-  /** Next available leaf index */
   nextLeafIndex: bigint;
-  /** Total number of deposits */
   totalDeposits: bigint;
-  /** Current root index in the history */
   currentRootIndex: bigint;
-  /** Historical roots for timing tolerance */
   roots: Array<ReadonlyUint8Array>;
 };
 
 export type PoolArgs = {
-  /** Authority that initialized the pool */
   authority: Address;
-  /** Next available leaf index */
   nextLeafIndex: number | bigint;
-  /** Total number of deposits */
   totalDeposits: number | bigint;
-  /** Current root index in the history */
   currentRootIndex: number | bigint;
-  /** Historical roots for timing tolerance */
   roots: Array<ReadonlyUint8Array>;
 };
 

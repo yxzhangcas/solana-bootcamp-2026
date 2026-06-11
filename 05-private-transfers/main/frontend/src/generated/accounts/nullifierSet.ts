@@ -49,16 +49,12 @@ export function getNullifierSetDiscriminatorBytes() {
 
 export type NullifierSet = {
   discriminator: ReadonlyUint8Array;
-  /** The pool this set belongs to */
   pool: Address;
-  /** Used nullifier hashes */
   nullifiers: Array<ReadonlyUint8Array>;
 };
 
 export type NullifierSetArgs = {
-  /** The pool this set belongs to */
   pool: Address;
-  /** Used nullifier hashes */
   nullifiers: Array<ReadonlyUint8Array>;
 };
 

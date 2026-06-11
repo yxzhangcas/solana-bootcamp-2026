@@ -1,5 +1,5 @@
 {
-  "address": "9T8s1qzKomXR17WgUo9mRwdNwWoQx4xjNtcMqr5pxk2M",
+  "address": "A6wocRpUfFJgXj1tQw6UG74E2HTqax4DzD9cN3YvDbN1",
   "metadata": {
     "name": "private_transfers",
     "version": "0.1.0",
@@ -10,14 +10,8 @@
     {
       "name": "deposit",
       "docs": [
-        "Deposit funds into the pool",
-        "",
-        "The client computes:",
-        "1. commitment = Poseidon(nullifier, secret, amount) offchain",
-        "2. new_root by inserting commitment into the Merkle tree offchain",
-        "",
-        "Security: The ZK proof during withdrawal verifies the commitment is in the tree.",
-        "If the client submits an invalid root, withdrawals will fail proof verification."
+        "Client computes commitment and new_root offchain.",
+        "Invalid roots will cause withdrawal proofs to fail."
       ],
       "discriminator": [
         242,
@@ -106,9 +100,6 @@
     },
     {
       "name": "initialize",
-      "docs": [
-        "Initialize the pool"
-      ],
       "discriminator": [
         175,
         175,
@@ -199,10 +190,6 @@
     },
     {
       "name": "withdraw",
-      "docs": [
-        "Withdraw funds from the pool using a ZK proof",
-        "The proof is verified by the Sunspot verifier program"
-      ],
       "discriminator": [
         183,
         18,
@@ -400,28 +387,28 @@
     },
     {
       "code": 6003,
-      "name": "InvalidProof",
-      "msg": "Invalid proof"
+      "name": "DepositTooSmall",
+      "msg": "Deposit amount too small (minimum 0.001 SOL)"
     },
     {
       "code": 6004,
-      "name": "InvalidAmount",
-      "msg": "Invalid amount"
-    },
-    {
-      "code": 6005,
       "name": "NullifierSetFull",
       "msg": "Nullifier set is full"
     },
     {
-      "code": 6006,
+      "code": 6005,
       "name": "RecipientMismatch",
       "msg": "Recipient account does not match recipient parameter"
     },
     {
-      "code": 6007,
+      "code": 6006,
       "name": "InvalidVerifier",
       "msg": "Invalid verifier program"
+    },
+    {
+      "code": 6007,
+      "name": "InsufficientVaultBalance",
+      "msg": "Insufficient vault balance for withdrawal"
     }
   ],
   "types": [
@@ -466,16 +453,10 @@
         "fields": [
           {
             "name": "pool",
-            "docs": [
-              "The pool this set belongs to"
-            ],
             "type": "pubkey"
           },
           {
             "name": "nullifiers",
-            "docs": [
-              "Used nullifier hashes"
-            ],
             "type": {
               "vec": {
                 "array": [
@@ -490,45 +471,27 @@
     },
     {
       "name": "Pool",
-      "docs": [
-        "Pool state - stores root history only (no onchain Merkle tree computation)"
-      ],
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "authority",
-            "docs": [
-              "Authority that initialized the pool"
-            ],
             "type": "pubkey"
           },
           {
             "name": "next_leaf_index",
-            "docs": [
-              "Next available leaf index"
-            ],
             "type": "u64"
           },
           {
             "name": "total_deposits",
-            "docs": [
-              "Total number of deposits"
-            ],
             "type": "u64"
           },
           {
             "name": "current_root_index",
-            "docs": [
-              "Current root index in the history"
-            ],
             "type": "u64"
           },
           {
             "name": "roots",
-            "docs": [
-              "Historical roots for timing tolerance"
-            ],
             "type": {
               "array": [
                 {

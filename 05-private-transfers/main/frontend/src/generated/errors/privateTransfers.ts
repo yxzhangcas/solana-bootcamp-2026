@@ -20,23 +20,20 @@ export const PRIVATE_TRANSFERS_ERROR__TREE_FULL = 0x1770; // 6000
 export const PRIVATE_TRANSFERS_ERROR__INVALID_ROOT = 0x1771; // 6001
 /** NullifierUsed: Nullifier already used */
 export const PRIVATE_TRANSFERS_ERROR__NULLIFIER_USED = 0x1772; // 6002
-/** InvalidProof: Invalid proof */
-export const PRIVATE_TRANSFERS_ERROR__INVALID_PROOF = 0x1773; // 6003
 /** DepositTooSmall: Deposit amount too small (minimum 0.001 SOL) */
-export const PRIVATE_TRANSFERS_ERROR__DEPOSIT_TOO_SMALL = 0x1774; // 6004
+export const PRIVATE_TRANSFERS_ERROR__DEPOSIT_TOO_SMALL = 0x1773; // 6003
 /** NullifierSetFull: Nullifier set is full */
-export const PRIVATE_TRANSFERS_ERROR__NULLIFIER_SET_FULL = 0x1775; // 6005
+export const PRIVATE_TRANSFERS_ERROR__NULLIFIER_SET_FULL = 0x1774; // 6004
 /** RecipientMismatch: Recipient account does not match recipient parameter */
-export const PRIVATE_TRANSFERS_ERROR__RECIPIENT_MISMATCH = 0x1776; // 6006
+export const PRIVATE_TRANSFERS_ERROR__RECIPIENT_MISMATCH = 0x1775; // 6005
 /** InvalidVerifier: Invalid verifier program */
-export const PRIVATE_TRANSFERS_ERROR__INVALID_VERIFIER = 0x1777; // 6007
+export const PRIVATE_TRANSFERS_ERROR__INVALID_VERIFIER = 0x1776; // 6006
 /** InsufficientVaultBalance: Insufficient vault balance for withdrawal */
-export const PRIVATE_TRANSFERS_ERROR__INSUFFICIENT_VAULT_BALANCE = 0x1778; // 6008
+export const PRIVATE_TRANSFERS_ERROR__INSUFFICIENT_VAULT_BALANCE = 0x1777; // 6007
 
 export type PrivateTransfersError =
   | typeof PRIVATE_TRANSFERS_ERROR__DEPOSIT_TOO_SMALL
   | typeof PRIVATE_TRANSFERS_ERROR__INSUFFICIENT_VAULT_BALANCE
-  | typeof PRIVATE_TRANSFERS_ERROR__INVALID_PROOF
   | typeof PRIVATE_TRANSFERS_ERROR__INVALID_ROOT
   | typeof PRIVATE_TRANSFERS_ERROR__INVALID_VERIFIER
   | typeof PRIVATE_TRANSFERS_ERROR__NULLIFIER_SET_FULL
@@ -51,7 +48,6 @@ if (process.env.NODE_ENV !== "production") {
   privateTransfersErrorMessages = {
     [PRIVATE_TRANSFERS_ERROR__DEPOSIT_TOO_SMALL]: `Deposit amount too small (minimum 0.001 SOL)`,
     [PRIVATE_TRANSFERS_ERROR__INSUFFICIENT_VAULT_BALANCE]: `Insufficient vault balance for withdrawal`,
-    [PRIVATE_TRANSFERS_ERROR__INVALID_PROOF]: `Invalid proof`,
     [PRIVATE_TRANSFERS_ERROR__INVALID_ROOT]: `Invalid Merkle root`,
     [PRIVATE_TRANSFERS_ERROR__INVALID_VERIFIER]: `Invalid verifier program`,
     [PRIVATE_TRANSFERS_ERROR__NULLIFIER_SET_FULL]: `Nullifier set is full`,

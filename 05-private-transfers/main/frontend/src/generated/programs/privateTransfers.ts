@@ -20,7 +20,7 @@ import {
 } from "../instructions";
 
 export const PRIVATE_TRANSFERS_PROGRAM_ADDRESS =
-  "9T8s1qzKomXR17WgUo9mRwdNwWoQx4xjNtcMqr5pxk2M" as Address<"9T8s1qzKomXR17WgUo9mRwdNwWoQx4xjNtcMqr5pxk2M">;
+  "A6wocRpUfFJgXj1tQw6UG74E2HTqax4DzD9cN3YvDbN1" as Address<"A6wocRpUfFJgXj1tQw6UG74E2HTqax4DzD9cN3YvDbN1">;
 
 export enum PrivateTransfersAccount {
   NullifierSet,
@@ -107,7 +107,7 @@ export function identifyPrivateTransfersInstruction(
 }
 
 export type ParsedPrivateTransfersInstruction<
-  TProgram extends string = "9T8s1qzKomXR17WgUo9mRwdNwWoQx4xjNtcMqr5pxk2M",
+  TProgram extends string = "A6wocRpUfFJgXj1tQw6UG74E2HTqax4DzD9cN3YvDbN1",
 > =
   | ({
       instructionType: PrivateTransfersInstruction.Deposit;

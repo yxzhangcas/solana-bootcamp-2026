@@ -1,0 +1,10 @@
+yxzhang@SolanaLearn:03-voting$ cd anchor/
+yxzhang@SolanaLearn:anchor$ avm use 1.0.0
+yxzhang@SolanaLearn:anchor$ anchor clean
+yxzhang@SolanaLearn:anchor$ anchor keys sync
+yxzhang@SolanaLearn:anchor$ anchor build
+yxzhang@SolanaLearn:anchor$ cp target/idl/voting.json programs/voting/idls/
+yxzhang@SolanaLearn:anchor$ anchor test
+yxzhang@SolanaLearn:anchor$ anchor clean
+yxzhang@SolanaLearn:anchor$ cd ..
+# git commit -m "[03-voting] build OK, test OK"

@@ -6,10 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-voting = "DzSG9vpCQttfKoLAYxCJHnkKcU1LZN3arLw6vDJ8vk5k"
-
-[registry]
-url = "https://api.apr.dev"
+voting = "fmyomWsaULjUAp2isYCyZrmC7puoi3nowNXGxM8hbam"
 
 [provider]
 cluster = "localnet"

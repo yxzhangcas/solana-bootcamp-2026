@@ -1,0 +1,5 @@
+yxzhang@SolanaLearn:anchor$ anchor keys sync
+yxzhang@SolanaLearn:anchor$ anchor build
+# 构建失败
+# 其中一个错误修复：ctx: Context<'_, '_, '_, 'info, Swap<'info>>, => ctx: Context<'info, Swap<'info>>, (lib.rs/swap.rs)
+# 另一个错误是：duplicate symbol: entrypoint 未找到解决方案

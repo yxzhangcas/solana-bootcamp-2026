@@ -14,19 +14,19 @@ export function LabubuCard() {
   const [txSignature, setTxSignature] = useState<string | null>(null);
 
   const MINT_ADRRESSES = [
-    "xU75nFnFbmktGubuXdoy14Eg8YT5D1XkMUC7K97ABMQ",
-    "7oD87fuM4wkiP2nrRCpEwG8GHczSuC64Lqzsoq27eHV3",
-    "FxuRVdYTfACd9d68zjSQUxN5qqB8FcgEZmf4aNu2umdg",
+    "GqFVQeSc1RzvSJjXqbs2qX85KDC8YJbPSKkAFwZL9Y1r",
+    "76oHriqczbLhSK7VrCjHLrjLmssxqLEwZ7MKP8JXT9DF",
+    "973Y29fgjhH1p3Hf3NDUqZUT2qcp1mw4jcVNyUgLGLzF",
 
-    "422ewKXmBgoDv9BzEU82TPoWryxvMav9gpVPv9DpeZN8",
-    "G2qTj7kNEMgPSMbJ8GS19cLNU8ogKxQojFUE7ihVFrfU",
-    "6rGKN6oexWERQJrJFyfU5uTVxN9pswRKAcyry9o9RCYj",
+    "7xpZMWwQbbkFePvApvEExGYHfJPPxywGNEJmgh83G6jj",
+    "Dm2DGoPJ8WJr4nrmSNjdk6vKWvFvFfYN4KTDzav6m2mj",
+    "EPd62e7t4CqEwDBHYpGwtFAwSbXMGWZLtxt6STwe8dGA",
 
-    "BwqNNaibmqEpGz6b8RseQcuXSEgQi2cgsjEhPwmqBjLv",
-    "C8AN1xqCTTvSaPjBvRMRQ8jkSczzZTXpTtv5Qx251Zbo",
-    "4Y4m9ky35ReZCZhJ1Frq5LWbykEjghYacCUPdCb3eG9p",
-    "7Tu4A7BtiGMQ9N1JxGucygxRf47GP3q3Bm7SUKZb3xfF",
-    "HLDQAYqyPBK7RKCUoePjd2mSapk5BGPgHGU5b7zeRKWP",
+    "FnnQxiFQNX55YjCgq5P9BbToe42GrpN42nmmutquyhBc",
+    "AsxhYEnsKwjkRMGMAXFhjj5hC8JVgqxamM2ZHrbE2Fr2",
+    "Ae7uuswgtQzkZUYyciaXUF5B2n4MnsCq4oYgt296NqDb",
+    "Buz6KQEP2HRMCQAv8hRsQ4jPYDTVvMjjT1aXh9bEmt7Y",
+    "3nntzLWKVggghYdo4zMxXn2nxW88cKY8hqvqBkG8yfYV",
   ];
 
 

@@ -1,0 +1,16 @@
+yxzhang@SolanaLearn:09-solana-rwa-labubu$ cd anchor/
+yxzhang@SolanaLearn:anchor$ avm use 0.31.1
+yxzhang@SolanaLearn:anchor$ anchor build
+yxzhang@SolanaLearn:anchor$ solana program deploy --program-id target/deploy/vault-keypair.json target/deploy/vault.so 
+Program Id: Cf8PP8nDWSspGghGXH3KtMwMMviMPGQX4jesPf4nBbuJ
+yxzhang@SolanaLearn:anchor$ npm install -g pnpm@latest-11
+yxzhang@SolanaLearn:anchor$ anchor run initialize
+yxzhang@SolanaLearn:anchor$ pnpm approve-builds  # yarn
+# 修改Anchor.toml中的rpc
+yxzhang@SolanaLearn:anchor$ anchor run initialize
+# 将产生的11个地址替换到app/components/labubu-card.tsx
+yxzhang@SolanaLearn:anchor$ cd ..
+yxzhang@SolanaLearn:09-solana-rwa-labubu$ npm install codama
+yxzhang@SolanaLearn:09-solana-rwa-labubu$ npm run codama:js
+yxzhang@SolanaLearn:09-solana-rwa-labubu$ npm run dev
+# http://localhost:3000 成功铸造NFT

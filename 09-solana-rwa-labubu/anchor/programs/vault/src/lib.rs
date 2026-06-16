@@ -8,7 +8,7 @@ use anchor_spl::{
 #[cfg(test)]
 mod tests;
 
-declare_id!("6RSKyunojsMYHZQWzeP6SPGXnmZwjHAcPcbEumk7Cw2g");
+declare_id!("Cf8PP8nDWSspGghGXH3KtMwMMviMPGQX4jesPf4nBbuJ");
 
 const TOTAL_LABUBU_TYPES: usize = 11;
 const NORMAL_SUPPLY: u16 = 120;

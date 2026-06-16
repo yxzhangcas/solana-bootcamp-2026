@@ -20,7 +20,7 @@ import {
 } from "../instructions";
 
 export const VAULT_PROGRAM_ADDRESS =
-  "6RSKyunojsMYHZQWzeP6SPGXnmZwjHAcPcbEumk7Cw2g" as Address<"6RSKyunojsMYHZQWzeP6SPGXnmZwjHAcPcbEumk7Cw2g">;
+  "Cf8PP8nDWSspGghGXH3KtMwMMviMPGQX4jesPf4nBbuJ" as Address<"Cf8PP8nDWSspGghGXH3KtMwMMviMPGQX4jesPf4nBbuJ">;
 
 export enum VaultAccount {
   LabubuCollection,
@@ -95,7 +95,7 @@ export function identifyVaultInstruction(
 }
 
 export type ParsedVaultInstruction<
-  TProgram extends string = "6RSKyunojsMYHZQWzeP6SPGXnmZwjHAcPcbEumk7Cw2g",
+  TProgram extends string = "Cf8PP8nDWSspGghGXH3KtMwMMviMPGQX4jesPf4nBbuJ",
 > =
   | ({
       instructionType: VaultInstruction.CreateLabubuMint;

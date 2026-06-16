@@ -12,12 +12,10 @@ import {
   combineCodec,
   fixDecoderSize,
   fixEncoderSize,
-  getAddressEncoder,
   getBytesDecoder,
   getBytesEncoder,
   getI64Decoder,
   getI64Encoder,
-  getProgramDerivedAddress,
   getStructDecoder,
   getStructEncoder,
   getU32Decoder,
@@ -42,6 +40,7 @@ import {
   type WritableAccount,
   type WritableSignerAccount,
 } from "@solana/kit";
+import { findMarketPda } from "../pdas";
 import { PREDICTION_MARKET_PROGRAM_ADDRESS } from "../programs";
 import {
   expectAddress,
@@ -182,13 +181,9 @@ export async function getCreateMarketInstructionAsync<
 
   // Resolve default values.
   if (!accounts.market.value) {
-    accounts.market.value = await getProgramDerivedAddress({
-      programAddress,
-      seeds: [
-        getBytesEncoder().encode(new Uint8Array([109, 97, 114, 107, 101, 116])),
-        getAddressEncoder().encode(expectAddress(accounts.creator.value)),
-        getU64Encoder().encode(expectSome(args.marketId)),
-      ],
+    accounts.market.value = await findMarketPda({
+      creator: expectAddress(accounts.creator.value),
+      marketId: expectSome(args.marketId),
     });
   }
   if (!accounts.systemProgram.value) {

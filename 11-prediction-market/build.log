@@ -1,0 +1,10 @@
+yxzhang@SolanaLearn:11-prediction-market$ avm use 0.31.1
+yxzhang@SolanaLearn:11-prediction-market$ npm run anchor-build
+yxzhang@SolanaLearn:11-prediction-market$ npm install -g codama
+yxzhang@SolanaLearn:11-prediction-market$ yarn
+yxzhang@SolanaLearn:11-prediction-market$ npm run codama:js
+yxzhang@SolanaLearn:11-prediction-market$ solana program deploy --program-id anchor/target/deploy/prediction_market-keypair.json anchor/target/deploy/prediction_market.so 
+Program Id: 8TtTqK5hrTMKZKvYQf7HqLDdZQWmgh9mMFdesDcyhLVr
+# 修改 app/components/provider.tsx market-list.tsx position-list.tsx 中的rpc
+yxzhang@SolanaLearn:11-prediction-market$ npm run dev
+# http://localhost:3000 创建投票，进行投注，功能OK

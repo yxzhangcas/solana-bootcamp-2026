@@ -7,13 +7,20 @@
  */
 
 import {
+  assertIsInstructionWithAccounts,
   containsBytes,
   fixEncoderSize,
   getBytesEncoder,
   type Address,
+  type Instruction,
+  type InstructionWithData,
   type ReadonlyUint8Array,
 } from "@solana/kit";
 import {
+  parseClaimWinningsInstruction,
+  parseCreateMarketInstruction,
+  parsePlaceBetInstruction,
+  parseResolveMarketInstruction,
   type ParsedClaimWinningsInstruction,
   type ParsedCreateMarketInstruction,
   type ParsedPlaceBetInstruction,
@@ -21,7 +28,7 @@ import {
 } from "../instructions";
 
 export const PREDICTION_MARKET_PROGRAM_ADDRESS =
-  "33ijjeqroG7Syj3fqJn7oebG6iAwk1pGq5deBNYzkr1h" as Address<"33ijjeqroG7Syj3fqJn7oebG6iAwk1pGq5deBNYzkr1h">;
+  "8TtTqK5hrTMKZKvYQf7HqLDdZQWmgh9mMFdesDcyhLVr" as Address<"8TtTqK5hrTMKZKvYQf7HqLDdZQWmgh9mMFdesDcyhLVr">;
 
 export enum PredictionMarketAccount {
   Market,
@@ -120,7 +127,7 @@ export function identifyPredictionMarketInstruction(
 }
 
 export type ParsedPredictionMarketInstruction<
-  TProgram extends string = "33ijjeqroG7Syj3fqJn7oebG6iAwk1pGq5deBNYzkr1h",
+  TProgram extends string = "8TtTqK5hrTMKZKvYQf7HqLDdZQWmgh9mMFdesDcyhLVr",
 > =
   | ({
       instructionType: PredictionMarketInstruction.ClaimWinnings;
@@ -134,3 +141,43 @@ export type ParsedPredictionMarketInstruction<
   | ({
       instructionType: PredictionMarketInstruction.ResolveMarket;
     } & ParsedResolveMarketInstruction<TProgram>);
+
+export function parsePredictionMarketInstruction<TProgram extends string>(
+  instruction: Instruction<TProgram> & InstructionWithData<ReadonlyUint8Array>,
+): ParsedPredictionMarketInstruction<TProgram> {
+  const instructionType = identifyPredictionMarketInstruction(instruction);
+  switch (instructionType) {
+    case PredictionMarketInstruction.ClaimWinnings: {
+      assertIsInstructionWithAccounts(instruction);
+      return {
+        instructionType: PredictionMarketInstruction.ClaimWinnings,
+        ...parseClaimWinningsInstruction(instruction),
+      };
+    }
+    case PredictionMarketInstruction.CreateMarket: {
+      assertIsInstructionWithAccounts(instruction);
+      return {
+        instructionType: PredictionMarketInstruction.CreateMarket,
+        ...parseCreateMarketInstruction(instruction),
+      };
+    }
+    case PredictionMarketInstruction.PlaceBet: {
+      assertIsInstructionWithAccounts(instruction);
+      return {
+        instructionType: PredictionMarketInstruction.PlaceBet,
+        ...parsePlaceBetInstruction(instruction),
+      };
+    }
+    case PredictionMarketInstruction.ResolveMarket: {
+      assertIsInstructionWithAccounts(instruction);
+      return {
+        instructionType: PredictionMarketInstruction.ResolveMarket,
+        ...parseResolveMarketInstruction(instruction),
+      };
+    }
+    default:
+      throw new Error(
+        `Unrecognized instruction type: ${instructionType as string}`,
+      );
+  }
+}

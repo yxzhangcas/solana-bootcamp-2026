@@ -10,10 +10,8 @@ import {
   combineCodec,
   fixDecoderSize,
   fixEncoderSize,
-  getAddressEncoder,
   getBytesDecoder,
   getBytesEncoder,
-  getProgramDerivedAddress,
   getStructDecoder,
   getStructEncoder,
   transformEncoder,
@@ -31,6 +29,7 @@ import {
   type WritableAccount,
   type WritableSignerAccount,
 } from "@solana/kit";
+import { findUserPositionPda } from "../pdas";
 import { PREDICTION_MARKET_PROGRAM_ADDRESS } from "../programs";
 import {
   expectAddress,
@@ -147,15 +146,9 @@ export async function getClaimWinningsInstructionAsync<
 
   // Resolve default values.
   if (!accounts.userPosition.value) {
-    accounts.userPosition.value = await getProgramDerivedAddress({
-      programAddress,
-      seeds: [
-        getBytesEncoder().encode(
-          new Uint8Array([112, 111, 115, 105, 116, 105, 111, 110]),
-        ),
-        getAddressEncoder().encode(expectAddress(accounts.market.value)),
-        getAddressEncoder().encode(expectAddress(accounts.user.value)),
-      ],
+    accounts.userPosition.value = await findUserPositionPda({
+      market: expectAddress(accounts.market.value),
+      user: expectAddress(accounts.user.value),
     });
   }
 

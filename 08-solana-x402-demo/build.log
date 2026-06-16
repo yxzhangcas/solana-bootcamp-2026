@@ -1,0 +1,6 @@
+# 修改package.json文件，升级next和x402-next的版本
+yxzhang@SolanaLearn:08-solana-x402-demo$ npm install  # 一堆warn，可以不管
+yxzhang@SolanaLearn:08-solana-x402-demo$ npx @next/codemod@canary middleware-to-proxy . --force
+yxzhang@SolanaLearn:08-solana-x402-demo$ cp .env.example .env.local
+yxzhang@SolanaLearn:08-solana-x402-demo$ npm run dev
+# http://localhost:3000 页面右边两个默认功能正常，左边功能付款正常，无法使用AI，需要付费Key

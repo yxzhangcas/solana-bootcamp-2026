@@ -43,7 +43,7 @@ const x402PaymentMiddleware = paymentMiddleware(
   },
 )
 
-export const middleware = (req: NextRequest) => {
+export const proxy = (req: NextRequest) => {
   const delegate = x402PaymentMiddleware as unknown as (
     request: NextRequest,
   ) => ReturnType<typeof x402PaymentMiddleware>

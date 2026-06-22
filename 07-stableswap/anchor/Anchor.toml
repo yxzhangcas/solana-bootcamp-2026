@@ -6,10 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-stableswap = "CorabfeniSyoc4aLcJe7t9b3RaFX5tzVWXdewU1xuA6B"
-
-[registry]
-url = "https://api.apr.dev"
+stableswap = "9KnYoNL6vyQcs5QiZyaTnoD38AVLFPHzHJRdsJtShyW5"
 
 [provider]
 cluster = "localnet"

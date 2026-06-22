@@ -19,7 +19,7 @@ pub mod state;
 
 use instructions::*;
 
-declare_id!("CorabfeniSyoc4aLcJe7t9b3RaFX5tzVWXdewU1xuA6B");
+declare_id!("9KnYoNL6vyQcs5QiZyaTnoD38AVLFPHzHJRdsJtShyW5");
 
 /// StableSwap AMM — a two-token liquidity pool optimized for stablecoin pairs.
 ///

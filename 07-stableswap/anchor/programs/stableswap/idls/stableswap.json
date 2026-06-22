@@ -1,0 +1,1030 @@
+{
+  "address": "9KnYoNL6vyQcs5QiZyaTnoD38AVLFPHzHJRdsJtShyW5",
+  "metadata": {
+    "name": "stableswap",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "StableSwap AMM for stablecoin pairs on Solana"
+  },
+  "docs": [
+    "StableSwap AMM — a two-token liquidity pool optimized for stablecoin pairs.",
+    "",
+    "## Background",
+    "",
+    "Constant-product AMMs (Uniswap-style x·y=k) have significant price impact",
+    "even for modest trades. For assets that should trade at nearly equal value",
+    "(USDC/USDT, USDh/USDT, etc.) the Curve-style hybrid invariant:",
+    "",
+    "4·A·(x + y) + D  =  4·A·D + D³/(4·x·y)",
+    "",
+    "gives dramatically lower slippage while still self-balancing when the peg",
+    "breaks. The amplification parameter A controls the trade-off:",
+    "",
+    "- High A (100-2000): very stable, nearly flat curve near peg",
+    "- Low A (1-10): close to constant-product, handles de-peg better"
+  ],
+  "instructions": [
+    {
+      "name": "add_liquidity",
+      "docs": [
+        "Deposit token A and/or token B to receive LP tokens.",
+        "",
+        "LP tokens represent a proportional share of the pool.",
+        "Depositing both tokens in the current pool ratio is most efficient,",
+        "but imbalanced deposits are also supported.",
+        "",
+        "# Arguments",
+        "* `amount_a`   — Token A to deposit.",
+        "* `amount_b`   — Token B to deposit.",
+        "* `min_lp_out` — Minimum LP tokens to receive (slippage guard)."
+      ],
+      "discriminator": [
+        181,
+        157,
+        89,
+        67,
+        143,
+        182,
+        52,
+        72
+      ],
+      "accounts": [
+        {
+          "name": "token_mint_a",
+          "docs": [
+            "Token A mint — validated against the pool's stored token list."
+          ]
+        },
+        {
+          "name": "token_mint_b",
+          "docs": [
+            "Token B mint — validated against the pool's stored token list."
+          ]
+        },
+        {
+          "name": "pool",
+          "docs": [
+            "Pool PDA — auto-resolved from [b\"pool\", lp_mint]."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "lp_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_a",
+          "docs": [
+            "Pool's token A vault."
+          ],
+          "writable": true
+        },
+        {
+          "name": "vault_b",
+          "docs": [
+            "Pool's token B vault."
+          ],
+          "writable": true
+        },
+        {
+          "name": "lp_mint",
+          "docs": [
+            "LP token mint."
+          ],
+          "writable": true
+        },
+        {
+          "name": "user_token_a",
+          "docs": [
+            "Depositor's token A account."
+          ],
+          "writable": true
+        },
+        {
+          "name": "user_token_b",
+          "docs": [
+            "Depositor's token B account."
+          ],
+          "writable": true
+        },
+        {
+          "name": "user_lp_token",
+          "docs": [
+            "Depositor's LP token account (receives newly minted LP tokens)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "oracle_price_feed_a"
+        },
+        {
+          "name": "oracle_price_feed_b"
+        },
+        {
+          "name": "user",
+          "docs": [
+            "The depositor."
+          ],
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "SPL Token program used for transfers and LP minting."
+          ],
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount_a",
+          "type": "u64"
+        },
+        {
+          "name": "amount_b",
+          "type": "u64"
+        },
+        {
+          "name": "min_lp_out",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "check_depeg",
+      "docs": [
+        "Check whether either stablecoin has moved outside the pool's peg band.",
+        "",
+        "This surfaces the same oracle-based halt condition used by swaps and",
+        "deposits, but as a standalone instruction for monitoring or preflight."
+      ],
+      "discriminator": [
+        224,
+        251,
+        1,
+        132,
+        42,
+        188,
+        160,
+        123
+      ],
+      "accounts": [
+        {
+          "name": "token_mint_a",
+          "docs": [
+            "Token A mint — validated against the pool's stored token list."
+          ]
+        },
+        {
+          "name": "token_mint_b",
+          "docs": [
+            "Token B mint — validated against the pool's stored token list."
+          ]
+        },
+        {
+          "name": "lp_mint",
+          "docs": [
+            "LP mint used to derive the pool PDA."
+          ]
+        },
+        {
+          "name": "pool",
+          "docs": [
+            "Pool PDA — auto-resolved from [b\"pool\", lp_mint]."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "lp_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle_price_feed_a"
+        },
+        {
+          "name": "oracle_price_feed_b"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_pool",
+      "docs": [
+        "Create a new two-token StableSwap pool.",
+        "",
+        "Initialises the pool state, LP mint, and two token vaults.",
+        "",
+        "# Arguments",
+        "* `amplification` — A parameter (1–1,000,000). Typical: 100–2000.",
+        "* `base_fee_bps`         — Minimum swap fee in basis points.",
+        "* `max_dynamic_fee_bps`  — Maximum swap fee once the pool drifts away from peg.",
+        "* `depeg_threshold_bps`  — Peg band that triggers the oracle pause.",
+        "* `max_price_age_sec`    — Maximum acceptable Pyth price age."
+      ],
+      "discriminator": [
+        95,
+        180,
+        10,
+        172,
+        84,
+        174,
+        232,
+        40
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "Pool creator; pays for account creation."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_mint_a",
+          "docs": [
+            "Token A mint (e.g. USDC)."
+          ]
+        },
+        {
+          "name": "token_mint_b",
+          "docs": [
+            "Token B mint (e.g. USDT)."
+          ]
+        },
+        {
+          "name": "pool",
+          "docs": [
+            "Pool PDA — derived from [b\"pool\", lp_mint]."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "lp_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "lp_mint",
+          "docs": [
+            "LP token mint — authority set to pool PDA."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault_a",
+          "docs": [
+            "Pool's token A vault (ATA owned by pool PDA)."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint_a"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_b",
+          "docs": [
+            "Pool's token B vault (ATA owned by pool PDA)."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint_b"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "oracle_price_feed_a"
+        },
+        {
+          "name": "oracle_price_feed_b"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "SPL Token program used for mint and vault CPI calls."
+          ]
+        },
+        {
+          "name": "associated_token_program",
+          "docs": [
+            "Associated Token program used to create the pool vault ATAs."
+          ]
+        },
+        {
+          "name": "rent",
+          "docs": [
+            "Rent sysvar required by Anchor account initialization."
+          ],
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amplification",
+          "type": "u64"
+        },
+        {
+          "name": "base_fee_bps",
+          "type": "u16"
+        },
+        {
+          "name": "max_dynamic_fee_bps",
+          "type": "u16"
+        },
+        {
+          "name": "depeg_threshold_bps",
+          "type": "u16"
+        },
+        {
+          "name": "max_price_age_sec",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "remove_liquidity",
+      "docs": [
+        "Burn LP tokens to withdraw a proportional share of both tokens.",
+        "",
+        "# Arguments",
+        "* `lp_amount` — LP tokens to burn.",
+        "* `min_a`     — Minimum token A to receive (slippage guard).",
+        "* `min_b`     — Minimum token B to receive (slippage guard)."
+      ],
+      "discriminator": [
+        80,
+        85,
+        209,
+        72,
+        24,
+        206,
+        177,
+        108
+      ],
+      "accounts": [
+        {
+          "name": "token_mint_a",
+          "docs": [
+            "Token A mint — validated against the pool's stored token list."
+          ]
+        },
+        {
+          "name": "token_mint_b",
+          "docs": [
+            "Token B mint — validated against the pool's stored token list."
+          ]
+        },
+        {
+          "name": "pool",
+          "docs": [
+            "Pool PDA — auto-resolved from [b\"pool\", lp_mint]."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "lp_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_a",
+          "docs": [
+            "Pool's token A vault."
+          ],
+          "writable": true
+        },
+        {
+          "name": "vault_b",
+          "docs": [
+            "Pool's token B vault."
+          ],
+          "writable": true
+        },
+        {
+          "name": "lp_mint",
+          "docs": [
+            "LP token mint (supply decreases on burn)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "user_token_a",
+          "docs": [
+            "Withdrawer's token A account (receives token A)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "user_token_b",
+          "docs": [
+            "Withdrawer's token B account (receives token B)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "user_lp_token",
+          "docs": [
+            "Withdrawer's LP token account (LP tokens burned from here)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "user",
+          "docs": [
+            "The withdrawer."
+          ],
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "SPL Token program used for burn and transfer CPI calls."
+          ],
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "lp_amount",
+          "type": "u64"
+        },
+        {
+          "name": "min_a",
+          "type": "u64"
+        },
+        {
+          "name": "min_b",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "swap",
+      "docs": [
+        "Swap one pool token for the other.",
+        "",
+        "Uses the StableSwap invariant for extremely low slippage when both",
+        "tokens trade near parity, while Pyth oracle checks and adaptive fees",
+        "defend LPs when the pool drifts away from fair value.",
+        "",
+        "# Arguments",
+        "* `amount_in`      — Input amount to sell.",
+        "* `min_amount_out` — Minimum output amount (slippage guard).",
+        "* `input_index`    — Pool token index to sell.",
+        "* `output_index`   — Pool token index to receive."
+      ],
+      "discriminator": [
+        248,
+        198,
+        158,
+        145,
+        225,
+        117,
+        135,
+        200
+      ],
+      "accounts": [
+        {
+          "name": "pool",
+          "docs": [
+            "The pool we're swapping in."
+          ],
+          "writable": true
+        },
+        {
+          "name": "oracle_price_feed_a"
+        },
+        {
+          "name": "oracle_price_feed_b"
+        },
+        {
+          "name": "user",
+          "docs": [
+            "The user performing the swap. They sign to authorize token transfers."
+          ],
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "SPL Token program used for transfer instructions."
+          ],
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount_in",
+          "type": "u64"
+        },
+        {
+          "name": "min_amount_out",
+          "type": "u64"
+        },
+        {
+          "name": "input_index",
+          "type": "u8"
+        },
+        {
+          "name": "output_index",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Pool",
+      "discriminator": [
+        241,
+        154,
+        109,
+        4,
+        17,
+        177,
+        109,
+        188
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAmplification",
+      "msg": "Amplification parameter must be between 1 and 1,000,000"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidFee",
+      "msg": "Fee exceeds maximum of 100%"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidFeeConfig",
+      "msg": "Dynamic fee configuration is invalid"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidDepegThreshold",
+      "msg": "Depeg threshold is outside the supported range"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidOracleAge",
+      "msg": "Oracle price maximum age must be greater than zero"
+    },
+    {
+      "code": 6005,
+      "name": "SlippageExceeded",
+      "msg": "Slippage exceeded: output less than minimum"
+    },
+    {
+      "code": 6006,
+      "name": "InsufficientLiquidity",
+      "msg": "Insufficient liquidity in pool"
+    },
+    {
+      "code": 6007,
+      "name": "MathOverflow",
+      "msg": "Math overflow"
+    },
+    {
+      "code": 6008,
+      "name": "ZeroAmount",
+      "msg": "Zero amount not allowed"
+    },
+    {
+      "code": 6009,
+      "name": "ConvergenceFailed",
+      "msg": "Convergence failed in Newton's method"
+    },
+    {
+      "code": 6010,
+      "name": "EmptyPool",
+      "msg": "Pool is empty"
+    },
+    {
+      "code": 6011,
+      "name": "InsufficientInitialLiquidity",
+      "msg": "Initial liquidity too small"
+    },
+    {
+      "code": 6012,
+      "name": "SingleSidedWithdrawalNotAllowed",
+      "msg": "Single-sided withdrawals are not supported; LP exits must stay proportional"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidTokenIndex",
+      "msg": "Invalid token index"
+    },
+    {
+      "code": 6014,
+      "name": "SameTokenSwap",
+      "msg": "Input and output token must be different"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidRemainingAccounts",
+      "msg": "Invalid remaining accounts for swap instruction"
+    },
+    {
+      "code": 6016,
+      "name": "InvalidVault",
+      "msg": "Invalid vault account"
+    },
+    {
+      "code": 6017,
+      "name": "InvalidMint",
+      "msg": "Invalid token mint"
+    },
+    {
+      "code": 6018,
+      "name": "InvalidMintDecimals",
+      "msg": "Both token mints must use the same decimals for this StableSwap pool"
+    },
+    {
+      "code": 6019,
+      "name": "InvalidOracleAccount",
+      "msg": "Invalid oracle account"
+    },
+    {
+      "code": 6020,
+      "name": "InvalidSystemProgram",
+      "msg": "Invalid system program account"
+    },
+    {
+      "code": 6021,
+      "name": "InvalidTokenProgram",
+      "msg": "Invalid token program account"
+    },
+    {
+      "code": 6022,
+      "name": "InvalidAssociatedTokenProgram",
+      "msg": "Invalid associated token program account"
+    },
+    {
+      "code": 6023,
+      "name": "StaleOraclePrice",
+      "msg": "Oracle price is stale"
+    },
+    {
+      "code": 6024,
+      "name": "InvalidOraclePrice",
+      "msg": "Oracle price is invalid"
+    },
+    {
+      "code": 6025,
+      "name": "PoolPaused",
+      "msg": "Pool is paused because one of the stablecoins is outside the peg band"
+    }
+  ],
+  "types": [
+    {
+      "name": "OracleConfig",
+      "docs": [
+        "Oracle configuration used for depeg detection and emergency fee escalation."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "oracle_a",
+            "docs": [
+              "Pyth feed used for token A."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "oracle_b",
+            "docs": [
+              "Pyth feed used for token B."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "max_depeg_bps",
+            "docs": [
+              "Maximum allowed deviation from $1 before the pool should pause."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "emergency_fee_bps",
+            "docs": [
+              "Emergency fee ceiling used when oracle protection is enabled."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "enabled",
+            "docs": [
+              "Whether oracle-based depeg protection is enabled for this pool."
+            ],
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pool",
+      "docs": [
+        "A two-token StableSwap liquidity pool.",
+        "",
+        "Designed for asset pairs expected to trade near 1:1 (e.g. USDC/USDT).",
+        "Uses the Curve StableSwap invariant to provide extremely low slippage",
+        "for balanced swaps while still supporting imbalanced positions."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "docs": [
+              "Pool creator / admin authority"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "lp_mint",
+            "docs": [
+              "LP token mint — minted on deposit, burned on withdraw"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amplification",
+            "docs": [
+              "StableSwap amplification coefficient (A).",
+              "Controls how \"stable\" the curve is — higher = lower slippage near peg."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "fee_bps",
+            "docs": [
+              "Baseline swap fee in basis points (1 bps = 0.01%)."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "token_mints",
+            "docs": [
+              "Token mint addresses for the pair."
+            ],
+            "type": {
+              "array": [
+                "pubkey",
+                2
+              ]
+            }
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump seed"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "oracle_config",
+            "docs": [
+              "Oracle settings used for depeg detection."
+            ],
+            "type": {
+              "defined": {
+                "name": "OracleConfig"
+              }
+            }
+          },
+          {
+            "name": "is_paused",
+            "docs": [
+              "Persisted pause state updated by the dedicated `check_depeg` instruction."
+            ],
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -3,3 +3,11 @@ yxzhang@SolanaLearn:anchor$ anchor build
 # 构建失败
 # 其中一个错误修复：ctx: Context<'_, '_, '_, 'info, Swap<'info>>, => ctx: Context<'info, Swap<'info>>, (lib.rs/swap.rs)
 # 另一个错误是：duplicate symbol: entrypoint 未找到解决方案
+#[RETRY]
+# 注释掉整个test文件
+yxzhang@SolanaLearn:anchor$ anchor build  # 构建成功
+yxzhang@SolanaLearn:anchor$ mkdir programs/stableswap/idls
+yxzhang@SolanaLearn:anchor$ cp target/idl/stableswap.json programs/stableswap/idls/
+# 修改test文件，加载idls，完全不使用src合约代码，部分函数直接拷贝一份到test目录，避开合约代码的entrypoint
+yxzhang@SolanaLearn:anchor$ anchor build
+yxzhang@SolanaLearn:anchor$ anchor test

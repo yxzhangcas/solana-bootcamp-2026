@@ -1,6 +1,8 @@
+pub mod math;
+use math::*;
 use std::{error::Error, mem::size_of, path::PathBuf};
 
-use anchor_lang::{prelude::rent, prelude::Clock};
+use anchor_lang::{declare_program, prelude::{Clock, rent}};
 use anchor_litesvm::{AnchorLiteSVM, AssertionHelpers, TestHelpers};
 use anchor_spl::{
     associated_token::{get_associated_token_address, ID as ASSOCIATED_TOKEN_PROGRAM_ID},
@@ -12,14 +14,11 @@ use solana_sdk::{
     native_loader,
     signature::{Keypair, Signer},
 };
-use stableswap::{
-    accounts,
-    constants::MINIMUM_LIQUIDITY,
-    instruction,
-    math::{calculate_lp_mint_amount, calculate_swap_output, calculate_withdraw_amounts},
-    state::Pool,
-    ID,
-};
+
+declare_program!(stableswap);
+use self::stableswap::*;
+
+const MINIMUM_LIQUIDITY: u64 = 1_000;
 
 const PROGRAM_SO_PATH: &str = "../../target/deploy/stableswap.so";
 const AMPLIFICATION: u64 = 100;
@@ -187,7 +186,7 @@ impl TestFixture {
         let ix = self
             .ctx
             .program()
-            .accounts(accounts::InitializePool {
+            .accounts(client::accounts::InitializePool {
                 admin: self.user.pubkey(),
                 token_mint_a: self.token_mint_a.pubkey(),
                 token_mint_b: self.token_mint_b.pubkey(),
@@ -202,7 +201,7 @@ impl TestFixture {
                 associated_token_program: ASSOCIATED_TOKEN_PROGRAM_ID,
                 rent: rent::ID,
             })
-            .args(instruction::InitializePool {
+            .args(client::args::InitializePool {
                 amplification: AMPLIFICATION,
                 base_fee_bps: BASE_FEE_BPS,
                 max_dynamic_fee_bps: MAX_DYNAMIC_FEE_BPS,
@@ -246,7 +245,7 @@ impl TestFixture {
         let ix = self
             .ctx
             .program()
-            .accounts(accounts::AddLiquidity {
+            .accounts(client::accounts::AddLiquidity {
                 token_mint_a: self.token_mint_a.pubkey(),
                 token_mint_b: self.token_mint_b.pubkey(),
                 pool: self.pool,
@@ -261,7 +260,7 @@ impl TestFixture {
                 user: self.user.pubkey(),
                 token_program: TOKEN_PROGRAM_ID,
             })
-            .args(instruction::AddLiquidity {
+            .args(client::args::AddLiquidity {
                 amount_a,
                 amount_b,
                 min_lp_out,
@@ -280,7 +279,7 @@ impl TestFixture {
         let ix = self
             .ctx
             .program()
-            .accounts(accounts::RemoveLiquidity {
+            .accounts(client::accounts::RemoveLiquidity {
                 token_mint_a: self.token_mint_a.pubkey(),
                 token_mint_b: self.token_mint_b.pubkey(),
                 pool: self.pool,
@@ -293,7 +292,7 @@ impl TestFixture {
                 user: self.user.pubkey(),
                 token_program: TOKEN_PROGRAM_ID,
             })
-            .args(instruction::RemoveLiquidity {
+            .args(client::args::RemoveLiquidity {
                 lp_amount,
                 min_a,
                 min_b,
@@ -311,7 +310,7 @@ impl TestFixture {
         let ix = self
             .ctx
             .program()
-            .accounts(accounts::CheckDepeg {
+            .accounts(client::accounts::CheckDepeg {
                 token_mint_a: self.token_mint_a.pubkey(),
                 token_mint_b: self.token_mint_b.pubkey(),
                 lp_mint: self.lp_mint.pubkey(),
@@ -319,7 +318,7 @@ impl TestFixture {
                 oracle_price_feed_a: self.oracle_a,
                 oracle_price_feed_b: self.oracle_b,
             })
-            .args(instruction::CheckDepeg {})
+            .args(client::args::CheckDepeg {})
             .instruction()
             .unwrap();
 
@@ -336,14 +335,14 @@ impl TestFixture {
         let mut ix = self
             .ctx
             .program()
-            .accounts(accounts::Swap {
+            .accounts(client::accounts::Swap {
                 pool: self.pool,
                 oracle_price_feed_a: self.oracle_a,
                 oracle_price_feed_b: self.oracle_b,
                 user: self.user.pubkey(),
                 token_program: TOKEN_PROGRAM_ID,
             })
-            .args(instruction::Swap {
+            .args(client::args::Swap {
                 amount_in,
                 min_amount_out,
                 input_index,
@@ -362,8 +361,8 @@ impl TestFixture {
         self.ctx.execute_instruction(ix, &[&self.user]).unwrap()
     }
 
-    fn pool_state(&self) -> Pool {
-        self.ctx.get_account::<Pool>(&self.pool).unwrap()
+    fn pool_state(&self) -> accounts::Pool {
+        self.ctx.get_account::<accounts::Pool>(&self.pool).unwrap()
     }
 
     fn overwrite_oracle(&mut self, oracle: solana_sdk::pubkey::Pubkey, price: i64) {
